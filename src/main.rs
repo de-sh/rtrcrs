@@ -1,13 +1,14 @@
 use std::io::stderr;
 use std::io::Write;
 
-
 mod vector;
 pub use vector::Vec3;
-use Vec3 as Point3;
 
 mod color;
 use color::Color;
+
+mod ray;
+use ray::Ray;
 
 fn main() {
     // Image
