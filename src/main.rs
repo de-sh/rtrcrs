@@ -3,9 +3,11 @@ use std::io::Write;
 
 
 mod vector;
-use vector::Vec3;
+pub use vector::Vec3;
 use Vec3 as Point3;
-use Vec3 as Color;
+
+mod color;
+use color::Color;
 
 fn main() {
     // Image
@@ -21,23 +23,16 @@ fn main() {
         eprint!("\rScanlines remaining: {} ", j);
         stderr().flush().unwrap();
         for i in 0..IMAGE_WIDTH {
-            let r: f64 = i as f64 / (IMAGE_WIDTH - 1) as f64;
-            let g: f64 = j as f64 / (IMAGE_HEIGHT - 1) as f64;
-            let b: f64 = 0.25;
-
-            let ir = (255.999 * r) as i32;
-            let ig = (255.999 * g) as i32;
-            let ib = (255.999 * b) as i32;
-
-            println!("{} {} {}", ir, ig, ib);
+            let pixel_color = Color::new(i as f64 / (IMAGE_WIDTH - 1) as f64, j as f64 / (IMAGE_HEIGHT - 1) as f64, 0.25);
+            println!("{}", pixel_color);
         }
     }
 
     eprintln!("\rImage Generated.");
     stderr().flush().unwrap();
 
-    let red = Color::new(0.1, 1.2, 2.3);
-    let green = Color::new(2.3, 1.2, 0.1);
+    let red = Color::new(0.1, 0.2, 0.3);
+    let green = Color::new(0.3, 0.2, 0.1);
     println!("Add: {}", red + green);
     println!("Sub: {}", red - green);
     println!("Mul: {}", red * 2.0);

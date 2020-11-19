@@ -48,12 +48,6 @@ impl Vec3 {
     }
 }
 
-impl fmt::Display for Vec3 {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "x: {}\ty: {}\tz: {}", self.x, self.y, self.z)
-    }
-}
-
 impl ops::Add for Vec3 {
     type Output = Vec3;
 
