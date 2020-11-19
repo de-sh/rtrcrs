@@ -1,4 +1,5 @@
 use crate::Vec3;
+use crate::Color;
 pub type Point3 = Vec3;
 
 pub struct Ray {
@@ -14,4 +15,10 @@ impl Ray {
     pub fn origin(self) -> Point3 { self.orig }
     pub fn direction(self) -> Vec3 { self.dir }
     pub fn at(self, t: f64) -> Vec3 { self.orig + self.dir*t }
+
+    pub fn color(self) -> Color {
+        let unit_dir = Vec3::unit_vector(self.dir);
+        let t = 0.5*(unit_dir.y() + 1.0);
+        (1.0-t) * Color::new(1.0, 1.0, 1.0) + t * Color::new(0.5, 0.7, 1.0)
+    }
 }
