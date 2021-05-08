@@ -1,14 +1,10 @@
 use std::io::stderr;
 use std::io::Write;
 
-mod vector;
-pub use vector::Vec3;
-
-mod color;
-use color::Color;
-
-mod ray;
-use ray::{Point3, Ray};
+use rtrcrs::{
+    ray::{Point3, Ray},
+    vector::Vec3,
+};
 
 fn main() {
     // Image
