@@ -19,7 +19,7 @@ impl Vec3 {
     pub fn x(self) -> f64 {
         self.x
     }
-        
+
     /// This function returns the y co-ordintate of given vector.
     pub fn y(self) -> f64 {
         self.y

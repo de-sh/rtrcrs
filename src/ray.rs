@@ -15,7 +15,7 @@ impl Ray {
         Self { orig, dir }
     }
 
-    /// Returns the origin of the given Ray. 
+    /// Returns the origin of the given Ray.
     pub fn origin(self) -> Point3 {
         self.orig
     }
