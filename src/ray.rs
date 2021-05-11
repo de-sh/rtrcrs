@@ -46,16 +46,16 @@ impl Ray {
     /// Returns a decision variable as an f64, describing whether a ray hits the corresponding sphere.
     pub fn hit_sphere(&self, center: Point3, radius: f64) -> f64 {
         let oc = self.orig - center;
-        let (a, b, c) = (
-            self.dir.dot(self.dir),
-            2.0 * oc.dot(self.dir),
-            oc.dot(oc) - radius * radius,
+        let (a, half_b, c) = (
+            self.dir.length_squared(),
+            oc.dot(self.dir),
+            oc.length_squared() - radius.powi(2),
         );
-        let discriminant = b * b - 4.0 * a * c;
+        let discriminant = half_b.powi(2) - a * c;
         if discriminant < 0.0 {
             -1.0
         } else {
-            (-b - discriminant.sqrt()) / (2.0 * a)
+            (-half_b - discriminant.sqrt()) / a
         }
     }
 }
