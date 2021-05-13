@@ -42,20 +42,4 @@ impl Ray {
             (1.0 - t) * Color::new(1.0, 1.0, 1.0) + t * Color::new(0.5, 0.7, 1.0)
         }
     }
-
-    /// Returns a decision variable as an f64, describing whether a ray hits the corresponding sphere.
-    pub fn hit_sphere(&self, center: Point3, radius: f64) -> f64 {
-        let oc = self.orig - center;
-        let (a, half_b, c) = (
-            self.dir.length_squared(),
-            oc.dot(self.dir),
-            oc.length_squared() - radius.powi(2),
-        );
-        let discriminant = half_b.powi(2) - a * c;
-        if discriminant < 0.0 {
-            -1.0
-        } else {
-            (-half_b - discriminant.sqrt()) / a
-        }
-    }
 }
