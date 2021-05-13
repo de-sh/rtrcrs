@@ -1,5 +1,6 @@
 use crate::{HitRecord, Hittable, Point3, Ray};
 
+/// Defines a geometrically Spherical object.
 pub struct Sphere {
     center: Point3,
     radius: f64,
@@ -12,6 +13,7 @@ impl Sphere {
 }
 
 impl Hittable for Sphere {
+    /// Provides a definition of hit() for spherical objects.
     fn hit(&self, ray: &Ray, t_min: f64, t_max: f64, rec: &mut HitRecord) -> bool {
         let oc = ray.origin() - self.center;
         let (a, half_b, c) = (
