@@ -4,6 +4,7 @@ use crate::{Color, Vec3};
 pub type Point3 = Vec3;
 
 /// Defines a Ray using a reference starting point and a direction vector.
+#[derive(Clone, Copy)]
 pub struct Ray {
     orig: Point3,
     dir: Vec3,
@@ -16,17 +17,17 @@ impl Ray {
     }
 
     /// Returns the origin of the given Ray.
-    pub fn origin(self) -> Point3 {
+    pub fn origin(&self) -> Point3 {
         self.orig
     }
 
     /// Returns the direction of the given Ray.
-    pub fn direction(self) -> Vec3 {
+    pub fn direction(&self) -> Vec3 {
         self.dir
     }
 
     /// Returns point along Ray at `t`.
-    pub fn at(self, t: f64) -> Point3 {
+    pub fn at(&self, t: f64) -> Point3 {
         self.orig + self.dir * t
     }
 
