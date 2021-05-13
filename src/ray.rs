@@ -1,4 +1,4 @@
-use crate::{Color, Vec3};
+use crate::{Color, HitRecord, Hittable, HittableList, Vec3, INFINITY};
 
 /// Defines an alias for Vec3, used to define a point in 3-dimensional co-ordinate space.
 pub type Point3 = Vec3;
@@ -32,14 +32,13 @@ impl Ray {
     }
 
     /// Returns the expected color at the intersection of any ray and the object(s).
-    pub fn color(self) -> Color {
-        let mut t = self.hit_sphere(Point3::new(0.0, 0.0, -1.0), 0.5);
-        if t > 0.0 {
-            let n = Vec3::unit_vector(self.at(t) - Vec3::new(0.0, 0.0, -1.0));
-            0.5 * Color::new(n.x() + 1.0, n.y() + 1.0, n.z() + 1.0)
+    pub fn color(&self, world: &HittableList) -> Color {
+        let mut rec = HitRecord::default();
+        if world.hit(self, 0.0, INFINITY, &mut rec) {
+            0.5 * (rec.normal + Color::new(1.0, 1.0, 1.0))
         } else {
             let unit_dir = Vec3::unit_vector(self.dir);
-            t = 0.5 * (unit_dir.y() + 1.0);
+            let t = 0.5 * (unit_dir.y() + 1.0);
             (1.0 - t) * Color::new(1.0, 1.0, 1.0) + t * Color::new(0.5, 0.7, 1.0)
         }
     }

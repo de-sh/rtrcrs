@@ -7,6 +7,10 @@ pub struct HittableList {
 }
 
 impl HittableList {
+    pub fn default() -> Self {
+        Self { objects: vec![] }
+    }
+
     pub fn add(&mut self, object: Arc<dyn Hittable>) {
         self.objects.push(object);
     }

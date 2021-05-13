@@ -6,7 +6,7 @@ pub mod color;
 use color::Color;
 
 pub mod ray;
-use ray::{Ray, Point3};
+use ray::{Point3, Ray};
 
 pub mod hittable;
 use hittable::{HitRecord, Hittable};
@@ -16,3 +16,6 @@ use sphere::Sphere;
 
 pub mod hittable_list;
 use hittable_list::HittableList;
+
+pub mod definitions;
+use definitions::{INFINITY, PI};

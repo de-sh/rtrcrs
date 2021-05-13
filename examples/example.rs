@@ -1,8 +1,12 @@
-use std::io::stderr;
-use std::io::Write;
+use std::{
+    io::{stderr, Write},
+    sync::Arc,
+};
 
 use rtrcrs::{
+    hittable_list::HittableList,
     ray::{Point3, Ray},
+    sphere::Sphere,
     vector::Vec3,
 };
 
@@ -11,6 +15,11 @@ fn main() {
     const ASPECT_RATIO: f64 = 16.0 / 9.0;
     const IMAGE_WIDTH: i32 = 400;
     const IMAGE_HEIGHT: i32 = (IMAGE_WIDTH as f64 / ASPECT_RATIO) as i32;
+
+    //World
+    let mut world = HittableList::default();
+    world.add(Arc::new(Sphere::new(Point3::new(0.0, -100.5, -1.0), 100.0)));
+    world.add(Arc::new(Sphere::new(Point3::new(0.0, 0.0, -1.0), 0.5)));
 
     // Camera
     const VIEWPORT_HEIGHT: f64 = 2.0;
@@ -38,7 +47,7 @@ fn main() {
                 origin,
                 lower_left_corner + u * horizontal + v * vertical - origin,
             )
-            .color();
+            .color(&world);
             println!("{}", pixel_color);
         }
     }
