@@ -31,7 +31,7 @@ impl Ray {
         self.orig + self.dir * t
     }
 
-    /// Returns the expected color at the intersection of any ray and the object(s).
+    /// Returns the expected color at the intersection of any ray and the object(s) in `world`.
     pub fn color(&self, world: &HittableList) -> Color {
         let mut rec = HitRecord::default();
         if world.hit(self, 0.0, INFINITY, &mut rec) {

@@ -8,6 +8,7 @@ pub struct HittableList {
 }
 
 impl HittableList {
+    /// Creates an empty object list.
     pub fn default() -> Self {
         Self { objects: vec![] }
     }
