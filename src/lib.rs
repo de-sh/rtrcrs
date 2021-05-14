@@ -12,10 +12,11 @@ pub mod hittable;
 use hittable::{HitRecord, Hittable};
 
 pub mod sphere;
-use sphere::Sphere;
 
 pub mod hittable_list;
 use hittable_list::HittableList;
 
 pub mod definitions;
-use definitions::{INFINITY, PI};
+use definitions::INFINITY;
+
+pub mod camera;

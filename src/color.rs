@@ -9,9 +9,9 @@ impl fmt::Display for Color {
         write!(
             f,
             "{} {} {}",
-            (255.999 * self.x()) as u8,
-            (255.999 * self.y()) as u8,
-            (255.999 * self.z()) as u8,
+            (256.0 * self.x()) as u8,
+            (256.0 * self.y()) as u8,
+            (256.0 * self.z()) as u8,
         )
     }
 }
