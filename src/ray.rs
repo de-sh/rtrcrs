@@ -1,18 +1,20 @@
-use crate::{Color, HitRecord, Hittable, HittableList, Vec3, INFINITY};
+use nalgebra::Vector3;
 
-/// Defines an alias for Vec3, used to define a point in 3-dimensional co-ordinate space.
-pub type Point3 = Vec3;
+use crate::{Color, HitRecord, Hittable, HittableList, INFINITY};
+
+/// Defines an alias for Vector3, used to define a point in 3-dimensional co-ordinate space.
+pub type Point3 = Vector3<f64>;
 
 /// Defines a Ray using a reference starting point and a direction vector.
 #[derive(Debug, PartialEq, Copy, Clone)]
 pub struct Ray {
     orig: Point3,
-    dir: Vec3,
+    dir: Vector3<f64>,
 }
 
 impl Ray {
     /// This function creates a new Ray.
-    pub fn new(orig: Point3, dir: Vec3) -> Self {
+    pub fn new(orig: Point3, dir: Vector3<f64>) -> Self {
         Self { orig, dir }
     }
 
@@ -22,7 +24,7 @@ impl Ray {
     }
 
     /// Returns the direction of the given Ray.
-    pub fn direction(&self) -> Vec3 {
+    pub fn direction(&self) -> Vector3<f64> {
         self.dir
     }
 
@@ -37,8 +39,8 @@ impl Ray {
         if world.hit(self, 0.0, INFINITY, &mut rec) {
             0.5 * (rec.normal + Color::new(1.0, 1.0, 1.0))
         } else {
-            let unit_dir = Vec3::unit_vector(self.dir);
-            let t = 0.5 * (unit_dir.y() + 1.0);
+            let unit_dir = self.dir.normalize();
+            let t = 0.5 * (unit_dir.y + 1.0);
             (1.0 - t) * Color::new(1.0, 1.0, 1.0) + t * Color::new(0.5, 0.7, 1.0)
         }
     }
@@ -51,7 +53,7 @@ mod tests {
     #[test]
     fn ray_test() {
         let origin = Point3::new(3.0, 2.0, 1.0);
-        let dir = Vec3::new(2.0, 3.0, 5.0);
+        let dir = Vector3::new(2.0, 3.0, 5.0);
         let ray = Ray::new(origin, dir);
         assert_eq!(ray.origin(), origin);
         assert_eq!(ray.direction(), dir);
@@ -60,8 +62,11 @@ mod tests {
     #[test]
     fn color_test() {
         let origin = Point3::new(3.0, 2.0, 1.0);
-        let dir = Vec3::new(2.0, 3.0, 5.0);
+        let dir = Vector3::new(2.0, 3.0, 5.0);
         let color = Ray::new(origin, dir).color();
-        assert_eq!(color, Color::new(0.6283339341519281, 0.7770003604911568, 1.0));
+        assert_eq!(
+            color,
+            Color::new(0.6283339341519281, 0.7770003604911568, 1.0)
+        );
     }
 }
