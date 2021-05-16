@@ -19,6 +19,7 @@ fn main() {
     const IMAGE_WIDTH: i32 = 400;
     const IMAGE_HEIGHT: i32 = (IMAGE_WIDTH as f64 / ASPECT_RATIO) as i32;
     const SAMPLES_PER_PIXEL: i32 = 100;
+    const MAX_DEPTH: i32 = 50;
 
     //World
     let mut world = HittableList::default();
@@ -45,7 +46,7 @@ fn main() {
                                 (i as f64 + random_double(0.0, 1.0)) / (IMAGE_WIDTH - 1) as f64,
                                 (j as f64 + random_double(0.0, 1.0)) / (IMAGE_HEIGHT - 1) as f64,
                             );
-                            camera.get_ray(u, v).color(&world)
+                            camera.get_ray(u, v).color(&world, MAX_DEPTH)
                         })
                         .sum();
                     anti_aliased(pixel_color, SAMPLES_PER_PIXEL)

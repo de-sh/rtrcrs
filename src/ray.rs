@@ -34,11 +34,12 @@ impl Ray {
     }
 
     /// Returns the expected color at the intersection of any ray and the object(s) in `world`.
-    pub fn color(&self, world: &HittableList) -> Color {
+    pub fn color(&self, world: &HittableList, depth: i32) -> Color {
         let mut rec = HitRecord::default();
-        if world.hit(self, 0.0, INFINITY, &mut rec) {
-            let target = rec.point + rec.normal + random_in_unit_sphere();
-            0.5 * Ray::new(rec.point, target - rec.point).color(world)
+        if depth <= 0 {
+            Color::new(0.0, 0.0, 0.0)
+        } else if world.hit(self, 0.0, INFINITY, &mut rec) {
+            0.5 * (rec.normal + Color::new(1.0, 1.0, 1.0))
         } else {
             let unit_dir = self.dir.normalize();
             let t = 0.5 * (unit_dir.y + 1.0);
