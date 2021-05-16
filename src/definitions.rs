@@ -1,3 +1,4 @@
+use nalgebra::Vector3;
 use rand::Rng;
 
 /// Re-exports the definition of the constant PI.
@@ -12,6 +13,22 @@ pub fn degrees_to_radians(degrees: f64) -> f64 {
 }
 
 /// Provides logic for generating random numbers of type f64 from 0.0 to 1.0 .
-pub fn random_double() -> f64 {
-    rand::thread_rng().gen_range(0.0..1.0)
+pub fn random_double(min: f64, max: f64) -> f64 {
+    rand::thread_rng().gen_range(min..max)
+}
+
+pub fn random_vec(min: f64, max: f64) -> Vector3<f64> {
+    let rd = || random_double(min, max);
+    Vector3::new(rd(), rd(), rd())
+}
+
+pub fn random_in_unit_sphere() -> Vector3<f64> {
+    loop {
+        let p = random_vec(-1.0, 1.0);
+        if p.dot(&p) >= 1.0 {
+            continue;
+        }
+        return p;
+    }
+    random_vec(-1.0, 1.0)
 }

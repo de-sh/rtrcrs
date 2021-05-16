@@ -42,8 +42,8 @@ fn main() {
                     let pixel_color: Color = (0..SAMPLES_PER_PIXEL)
                         .map(|_| {
                             let (u, v) = (
-                                (i as f64 + random_double()) / (IMAGE_WIDTH - 1) as f64,
-                                (j as f64 + random_double()) / (IMAGE_HEIGHT - 1) as f64,
+                                (i as f64 + random_double(0.0, 1.0)) / (IMAGE_WIDTH - 1) as f64,
+                                (j as f64 + random_double(0.0, 1.0)) / (IMAGE_HEIGHT - 1) as f64,
                             );
                             camera.get_ray(u, v).color(&world)
                         })
