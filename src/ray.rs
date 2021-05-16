@@ -38,7 +38,7 @@ impl Ray {
         let mut rec = HitRecord::default();
         if depth <= 0 {
             Color::new(0.0, 0.0, 0.0)
-        } else if world.hit(self, 0.0, INFINITY, &mut rec) {
+        } else if world.hit(self, 0.001, INFINITY, &mut rec) {
             let target = rec.point + rec.normal + random_in_unit_sphere();
             0.5 * Ray::new(rec.point, target - rec.point).color(&world, depth-1)
         } else {
