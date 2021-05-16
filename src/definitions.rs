@@ -30,5 +30,14 @@ pub fn random_in_unit_sphere() -> Vector3<f64> {
         }
         return p;
     }
-    random_vec(-1.0, 1.0)
+}
+
+pub fn random_in_hemisphere(normal: &Vector3<f64>) -> Vector3<f64> {
+    let in_unit_sphere = random_in_unit_sphere();
+    // In the same hemisphere as the normal
+    if in_unit_sphere.dot(normal) > 0.0 {
+        in_unit_sphere
+    } else {
+        -in_unit_sphere
+    }
 }
