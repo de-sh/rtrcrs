@@ -1,9 +1,11 @@
-use std::io::stderr;
-use std::io::Write;
+use std::{
+    io::{stderr, Write},
+    sync::Arc,
+};
 
 use rtrcrs::{
-    ray::{Point3, Ray},
-    vector::Vec3,
+    camera::Camera, color::Color, definitions::random_double, hittable_list::HittableList,
+    ray::Point3, sphere::Sphere,
 };
 
 fn main() {
@@ -11,17 +13,15 @@ fn main() {
     const ASPECT_RATIO: f64 = 16.0 / 9.0;
     const IMAGE_WIDTH: i32 = 400;
     const IMAGE_HEIGHT: i32 = (IMAGE_WIDTH as f64 / ASPECT_RATIO) as i32;
+    const SAMPLES_PER_PIXEL: i32 = 100;
+
+    //World
+    let mut world = HittableList::default();
+    world.add(Arc::new(Sphere::new(Point3::new(0.0, -100.5, -1.0), 100.0)));
+    world.add(Arc::new(Sphere::new(Point3::new(0.0, 0.0, -1.0), 0.5)));
 
     // Camera
-    const VIEWPORT_HEIGHT: f64 = 2.0;
-    const VIEWPORT_WIDTH: f64 = ASPECT_RATIO * VIEWPORT_HEIGHT;
-    const FOCAL_LENGTH: f64 = 1.0;
-
-    let origin: Point3 = Point3::new(0.0, 0.0, 0.0);
-    let horizontal: Vec3 = Vec3::new(VIEWPORT_WIDTH, 0.0, 0.0);
-    let vertical: Vec3 = Vec3::new(0.0, VIEWPORT_HEIGHT, 0.0);
-    let lower_left_corner: Vec3 =
-        origin - horizontal / 2.0 - vertical / 2.0 - Vec3::new(0.0, 0.0, FOCAL_LENGTH);
+    let camera = Camera::new();
 
     // Render
     println!("P3\n{} {}\n255", IMAGE_WIDTH, IMAGE_HEIGHT);
@@ -30,16 +30,15 @@ fn main() {
         eprint!("\rScanlines remaining: {} ", j);
         stderr().flush().unwrap();
         for i in 0..IMAGE_WIDTH {
-            let (u, v) = (
-                i as f64 / (IMAGE_WIDTH - 1) as f64,
-                j as f64 / (IMAGE_HEIGHT - 1) as f64,
-            );
-            let pixel_color = Ray::new(
-                origin,
-                lower_left_corner + u * horizontal + v * vertical - origin,
-            )
-            .color();
-            println!("{}", pixel_color);
+            let mut pixel_color = Color::new(0.0, 0.0, 0.0);
+            for _ in 0..SAMPLES_PER_PIXEL {
+                let (u, v) = (
+                    (i as f64 + random_double()) / (IMAGE_WIDTH - 1) as f64,
+                    (j as f64 + random_double()) / (IMAGE_HEIGHT - 1) as f64,
+                );
+                pixel_color += camera.get_ray(u, v).color(&world);
+            }
+            println!("{}", pixel_color.anti_aliased(SAMPLES_PER_PIXEL));
         }
     }
 
