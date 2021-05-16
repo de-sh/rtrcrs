@@ -17,9 +17,9 @@ impl Hittable for Sphere {
     fn hit(&self, ray: &Ray, t_min: f64, t_max: f64, rec: &mut HitRecord) -> bool {
         let oc = ray.origin() - self.center;
         let (a, half_b, c) = (
-            ray.direction().length_squared(),
-            oc.dot(ray.direction()),
-            oc.length_squared() - self.radius.powi(2),
+            ray.direction().dot(&ray.direction()),
+            oc.dot(&ray.direction()),
+            oc.dot(&oc) - self.radius.powi(2),
         );
 
         let discriminant = half_b.powi(2) - a * c;
