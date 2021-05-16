@@ -1,11 +1,16 @@
+use rayon::prelude::*;
 use std::{
     io::{stderr, Write},
     sync::Arc,
 };
 
 use rtrcrs::{
-    camera::Camera, color::Color, definitions::random_double, hittable_list::HittableList,
-    ray::Point3, sphere::Sphere,
+    camera::Camera,
+    color::{anti_aliased, Color},
+    definitions::random_double,
+    hittable_list::HittableList,
+    ray::Point3,
+    sphere::Sphere,
 };
 
 fn main() {
@@ -26,20 +31,34 @@ fn main() {
     // Render
     println!("P3\n{} {}\n255", IMAGE_WIDTH, IMAGE_HEIGHT);
 
-    for j in (0..IMAGE_HEIGHT).rev() {
-        eprint!("\rScanlines remaining: {} ", j);
-        stderr().flush().unwrap();
-        for i in 0..IMAGE_WIDTH {
-            let mut pixel_color = Color::new(0.0, 0.0, 0.0);
-            for _ in 0..SAMPLES_PER_PIXEL {
-                let (u, v) = (
-                    (i as f64 + random_double()) / (IMAGE_WIDTH - 1) as f64,
-                    (j as f64 + random_double()) / (IMAGE_HEIGHT - 1) as f64,
-                );
-                pixel_color += camera.get_ray(u, v).color(&world);
-            }
-            println!("{}", pixel_color.anti_aliased(SAMPLES_PER_PIXEL));
-        }
+    let image = (0..IMAGE_HEIGHT)
+        .into_par_iter()
+        .rev()
+        .flat_map(|j| {
+            eprint!("\rScanlines remaining: {} ", j);
+            stderr().flush().unwrap();
+            (0..IMAGE_WIDTH)
+                .flat_map(|i| {
+                    let pixel_color: Color = (0..SAMPLES_PER_PIXEL)
+                        .map(|_| {
+                            let (u, v) = (
+                                (i as f64 + random_double()) / (IMAGE_WIDTH - 1) as f64,
+                                (j as f64 + random_double()) / (IMAGE_HEIGHT - 1) as f64,
+                            );
+                            camera.get_ray(u, v).color(&world)
+                        })
+                        .sum();
+                    anti_aliased(pixel_color, SAMPLES_PER_PIXEL)
+                        .iter()
+                        .map(|c| (c * 255.9) as u8)
+                        .collect::<Vec<u8>>()
+                })
+                .collect::<Vec<u8>>()
+        })
+        .collect::<Vec<u8>>();
+
+    for pc in image.chunks(3) {
+        println!("{} {} {}", pc[0], pc[1], pc[2]);
     }
 
     eprintln!("\rImage Generated.");
