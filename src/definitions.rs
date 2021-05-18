@@ -46,11 +46,21 @@ pub fn random_unit_vector() -> Vector3<f64> {
     random_in_unit_sphere().normalize()
 }
 
+pub fn near_zero(v: Vector3<f64>) -> bool {
+    let s = 10f64.powi(-8);
+    v.x.abs() < s && v.y.abs() < s && v.z.abs() < s
+}
+
 pub fn reflect(v: &Vector3<f64>, n: &Vector3<f64>) -> Vector3<f64> {
     v - 2.0 * v.dot(n) * n
 }
 
-pub fn near_zero(v: Vector3<f64>) -> bool {
-    let s = 10f64.powi(-8);
-    v.x.abs() < s && v.y.abs() < s && v.z.abs() < s
+pub fn refract(uv: &Vector3<f64>, n: &Vector3<f64>, etai_over_etat: f64) -> Vector3<f64> {
+    let cos_theta = n.dot(&-uv).min(1.0);
+    let r_out_perpendicular = etai_over_etat * (uv + cos_theta * n);
+    let r_out_parallel = -(1.0 - r_out_perpendicular.dot(&r_out_perpendicular))
+        .abs()
+        .sqrt()
+        * n;
+    r_out_perpendicular + r_out_parallel
 }
