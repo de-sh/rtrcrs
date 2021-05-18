@@ -1,4 +1,6 @@
 //! Definition of a 3-dimensional model rendering engine using ray tracing.
+pub type Vec3 = nalgebra::Vector3<f64>;
+
 pub mod color;
 use color::Color;
 

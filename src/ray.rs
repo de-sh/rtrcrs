@@ -1,20 +1,18 @@
-use nalgebra::Vector3;
+use crate::{Color, Hittable, HittableList, Vec3, INFINITY};
 
-use crate::{Color, Hittable, HittableList, INFINITY};
-
-/// Defines an alias for Vector3, used to define a point in 3-dimensional co-ordinate space.
-pub type Point3 = Vector3<f64>;
+/// Defines an alias for Vec3, used to define a point in 3-dimensional co-ordinate space.
+pub type Point3 = Vec3;
 
 /// Defines a Ray using a reference starting point and a direction vector.
 #[derive(Debug, PartialEq, Copy, Clone)]
 pub struct Ray {
     orig: Point3,
-    dir: Vector3<f64>,
+    dir: Vec3,
 }
 
 impl Ray {
     /// This function creates a new Ray.
-    pub fn new(orig: Point3, dir: Vector3<f64>) -> Self {
+    pub fn new(orig: Point3, dir: Vec3) -> Self {
         Self { orig, dir }
     }
 
@@ -24,7 +22,7 @@ impl Ray {
     }
 
     /// Returns the direction of the given Ray.
-    pub fn direction(&self) -> Vector3<f64> {
+    pub fn direction(&self) -> Vec3 {
         self.dir
     }
 
@@ -62,7 +60,7 @@ mod tests {
     #[test]
     fn ray_test() {
         let origin = Point3::new(3.0, 2.0, 1.0);
-        let dir = Vector3::new(2.0, 3.0, 5.0);
+        let dir = Vec3::new(2.0, 3.0, 5.0);
         let ray = Ray::new(origin, dir);
 
         assert_eq!(ray.origin(), origin);
@@ -72,7 +70,7 @@ mod tests {
     #[test]
     fn color_test() {
         let origin = Point3::new(3.0, 2.0, 1.0);
-        let dir = Vector3::new(2.0, 3.0, 5.0);
+        let dir = Vec3::new(2.0, 3.0, 5.0);
         let world = HittableList::default();
         let color = Ray::new(origin, dir).color(&world, 10);
 
