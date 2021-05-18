@@ -58,9 +58,15 @@ pub fn reflect(v: &Vector3<f64>, n: &Vector3<f64>) -> Vector3<f64> {
 pub fn refract(uv: &Vector3<f64>, n: &Vector3<f64>, etai_over_etat: f64) -> Vector3<f64> {
     let cos_theta = n.dot(&-uv).min(1.0);
     let r_out_perpendicular = etai_over_etat * (uv + cos_theta * n);
-    let r_out_parallel = -(1.0 - r_out_perpendicular.dot(&r_out_perpendicular))
+    let r_out_parallel = -((1.0 - r_out_perpendicular.dot(&r_out_perpendicular))
         .abs()
-        .sqrt()
+        .sqrt())
         * n;
     r_out_perpendicular + r_out_parallel
+}
+
+pub fn reflectance(cosine: f64, ref_idx: f64) -> f64 {
+    // Using Schlick's approximation of reflectance.
+    let r0 = ((1.0 - ref_idx) / (1.0 + ref_idx)).powi(2);
+    r0 + (1.0 - r0) * (1.0 - cosine).powi(5)
 }
