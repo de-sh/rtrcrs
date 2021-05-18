@@ -1,5 +1,5 @@
 /// Defines a pixel's color as an RGB value.
-pub type Color = nalgebra::Vector3<f64>;
+pub type Color = crate::Vec3;
 
 /// Used to smoothen edges using Antialiasing.
 pub fn anti_aliased(color: Color, samples_per_pixel: i32) -> Color {

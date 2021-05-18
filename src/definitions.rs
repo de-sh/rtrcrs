@@ -1,4 +1,4 @@
-use nalgebra::Vector3;
+use crate::Vec3;
 use rand::Rng;
 
 /// Re-exports the definition of the constant PI.
@@ -17,12 +17,12 @@ pub fn random_double(min: f64, max: f64) -> f64 {
     rand::thread_rng().gen_range(min..max)
 }
 
-pub fn random_vec(min: f64, max: f64) -> Vector3<f64> {
+pub fn random_vec(min: f64, max: f64) -> Vec3 {
     let rd = || random_double(min, max);
-    Vector3::new(rd(), rd(), rd())
+    Vec3::new(rd(), rd(), rd())
 }
 
-pub fn random_in_unit_sphere() -> Vector3<f64> {
+pub fn random_in_unit_sphere() -> Vec3 {
     loop {
         let p = random_vec(-1.0, 1.0);
         if p.dot(&p) >= 1.0 {
@@ -32,7 +32,7 @@ pub fn random_in_unit_sphere() -> Vector3<f64> {
     }
 }
 
-pub fn random_in_hemisphere(normal: &Vector3<f64>) -> Vector3<f64> {
+pub fn random_in_hemisphere(normal: &Vec3) -> Vec3 {
     let in_unit_sphere = random_in_unit_sphere();
     // In the same hemisphere as the normal
     if in_unit_sphere.dot(normal) > 0.0 {
@@ -42,20 +42,20 @@ pub fn random_in_hemisphere(normal: &Vector3<f64>) -> Vector3<f64> {
     }
 }
 
-pub fn random_unit_vector() -> Vector3<f64> {
+pub fn random_unit_vector() -> Vec3 {
     random_in_unit_sphere().normalize()
 }
 
-pub fn near_zero(v: Vector3<f64>) -> bool {
+pub fn near_zero(v: Vec3) -> bool {
     let s = 10f64.powi(-8);
     v.x.abs() < s && v.y.abs() < s && v.z.abs() < s
 }
 
-pub fn reflect(v: &Vector3<f64>, n: &Vector3<f64>) -> Vector3<f64> {
+pub fn reflect(v: &Vec3, n: &Vec3) -> Vec3 {
     v - 2.0 * v.dot(n) * n
 }
 
-pub fn refract(uv: &Vector3<f64>, n: &Vector3<f64>, etai_over_etat: f64) -> Vector3<f64> {
+pub fn refract(uv: &Vec3, n: &Vec3, etai_over_etat: f64) -> Vec3 {
     let cos_theta = n.dot(&-uv).min(1.0);
     let r_out_perpendicular = etai_over_etat * (uv + cos_theta * n);
     let r_out_parallel = -((1.0 - r_out_perpendicular.dot(&r_out_perpendicular))

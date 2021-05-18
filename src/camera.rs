@@ -1,4 +1,4 @@
-use crate::{Point3, Ray};
+use crate::{definitions::degrees_to_radians, Point3, Ray, Vec3};
 
 /// Defines a data-structure used to store the geometry of the Camera.
 #[derive(Clone, Copy)]
@@ -11,17 +11,26 @@ pub struct Camera {
 
 impl Camera {
     /// Used to set the geometric values of the Camera.
-    pub fn new() -> Self {
-        let aspect_ratio = 16.0 / 9.0;
-        let viewport_height = 2.0;
+    pub fn new(
+        position: &Point3,
+        focus: &Point3,
+        vup: &Vec3,
+        vfov: f64,
+        aspect_ratio: f64,
+    ) -> Self {
+        let theta = degrees_to_radians(vfov);
+        let h = (theta / 2.0).tan();
+        let viewport_height = 2.0 * h;
         let viewport_width = aspect_ratio * viewport_height;
-        let focal_length = 1.0;
 
-        let origin = Point3::new(0.0, 0.0, 0.0);
-        let horizontal = Point3::new(viewport_width, 0.0, 0.0);
-        let vertical = Point3::new(0.0, viewport_height, 0.0);
-        let lower_left_corner =
-            origin - horizontal / 2.0 - vertical / 2.0 - Point3::new(0.0, 0.0, focal_length);
+        let w = (position - focus).normalize();
+        let u = vup.cross(&w).normalize();
+        let v = w.cross(&u);
+
+        let origin = *position;
+        let horizontal = viewport_width * u;
+        let vertical = viewport_height * v;
+        let lower_left_corner = origin - horizontal / 2.0 - vertical / 2.0 - w;
 
         Self {
             origin,
