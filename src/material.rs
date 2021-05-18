@@ -1,5 +1,8 @@
 use crate::{
-    definitions::{near_zero, random_in_unit_sphere, random_unit_vector, reflect, refract},
+    definitions::{
+        near_zero, random_double, random_in_unit_sphere, random_unit_vector, reflect, reflectance,
+        refract,
+    },
     Color, HitRecord, Ray,
 };
 
@@ -76,13 +79,15 @@ impl Material for Dielectric {
         let cos_theta = -unit_direction.dot(&rec.normal).min(1.0);
         let sin_theta = (1.0 - cos_theta.powi(2)).sqrt();
 
-        let cannot_refract = refraction_ratio * sin_theta > 1.0;
+        let cannot_refract = refraction_ratio * sin_theta > 1.0
+            || reflectance(cos_theta, refraction_ratio) > random_double(0.0, 1.0);
 
         let direction = if cannot_refract {
             reflect(&unit_direction, &rec.normal)
         } else {
             refract(&unit_direction, &rec.normal, refraction_ratio)
         };
+
         Some((Color::new(1.0, 1.0, 1.0), Ray::new(rec.point, direction)))
     }
 }
