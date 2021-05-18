@@ -1,5 +1,5 @@
 use crate::{
-    definitions::{near_zero, random_in_unit_sphere, random_unit_vector, reflect},
+    definitions::{near_zero, random_in_unit_sphere, random_unit_vector, reflect, refract},
     Color, HitRecord, Ray,
 };
 
@@ -51,5 +51,38 @@ impl Material for Metal {
         } else {
             None
         }
+    }
+}
+
+pub struct Dielectric {
+    refractive_index: f64,
+}
+
+impl Dielectric {
+    pub fn new(refractive_index: f64) -> Self {
+        Self { refractive_index }
+    }
+}
+
+impl Material for Dielectric {
+    fn scatter(&self, r_in: &Ray, rec: &HitRecord, _scattered: &Ray) -> Option<(Color, Ray)> {
+        let refraction_ratio = if rec.front_face {
+            1.0 / self.refractive_index
+        } else {
+            self.refractive_index
+        };
+
+        let unit_direction = r_in.direction().normalize();
+        let cos_theta = -unit_direction.dot(&rec.normal).min(1.0);
+        let sin_theta = (1.0 - cos_theta.powi(2)).sqrt();
+
+        let cannot_refract = refraction_ratio * sin_theta > 1.0;
+
+        let direction = if cannot_refract {
+            reflect(&unit_direction, &rec.normal)
+        } else {
+            refract(&unit_direction, &rec.normal, refraction_ratio)
+        };
+        Some((Color::new(1.0, 1.0, 1.0), Ray::new(rec.point, direction)))
     }
 }
