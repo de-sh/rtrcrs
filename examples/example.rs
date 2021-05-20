@@ -59,16 +59,18 @@ fn main() {
 
     // Camera
     let camera = Camera::new(
-        &Point3::new(-2.0, 1.0, 1.0),
+        &Point3::new(3.0, 3.0, 2.0),
         &Point3::new(0.0, 0.0, -1.0),
         &Vec3::new(0.0, 1.0, 0.0),
         20.0,
         ASPECT_RATIO,
+        2.0,
+        5.0,
     );
 
     // Render
     println!("P3\n{} {}\n255", IMAGE_WIDTH, IMAGE_HEIGHT);
-    std::env::set_var("RAYON_NUM_THREADS", "8");
+    std::env::set_var("RAYON_NUM_THREADS", "4");
     let image = (0..IMAGE_HEIGHT)
         .into_par_iter()
         .rev()
