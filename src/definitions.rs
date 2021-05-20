@@ -1,5 +1,12 @@
-use crate::Vec3;
+use crate::{
+    hittable_list::HittableList,
+    material::{Dielectric, Lambertian, Metal},
+    ray::Point3,
+    sphere::Sphere,
+    Color, Vec3,
+};
 use rand::Rng;
+use std::sync::Arc;
 
 /// Re-exports the definition of the constant PI.
 pub use std::f64::consts::PI;
@@ -76,4 +83,70 @@ pub fn refract(uv: &Vec3, n: &Vec3, etai_over_etat: f64) -> Vec3 {
 pub fn reflectance(cosine: f64, ref_idx: f64) -> f64 {
     let r0 = ((1.0 - ref_idx) / (1.0 + ref_idx)).powi(2);
     r0 + (1.0 - r0) * (1.0 - cosine).powi(5)
+}
+
+pub fn random_scene() -> HittableList {
+    let mut world = HittableList::default();
+
+    let ground_material = Arc::new(Lambertian::new(Color::new(0.5, 0.5, 0.5)));
+    world.add(Arc::new(Sphere::new(
+        Point3::new(0.0, -1000.0, 0.0),
+        1000.0,
+        ground_material,
+    )));
+    let rand = || random_double(0.0, 1.0);
+    let rand_color = |min, max| {
+        Color::new(
+            random_double(min, max),
+            random_double(min, max),
+            random_double(min, max),
+        )
+    };
+    for a in -11..11 {
+        for b in -11..11 {
+            let center = Point3::new(a as f64 + 0.9 * rand(), 0.2, b as f64 + 0.9 * rand());
+            let point = center - Point3::new(4.0, 0.2, 0.0);
+            if point.dot(&point).sqrt() > 0.9 {
+                match (rand() * 100.0) as u8 {
+                    0..=79 => {
+                        let albedo = rand_color(0.0, 1.0);
+                        let sphere_material = Arc::new(Lambertian::new(albedo));
+                        world.add(Arc::new(Sphere::new(center, 0.2, sphere_material)));
+                    }
+                    8..=94 => {
+                        let albedo = rand_color(0.5, 1.0);
+                        let fuzz = random_double(0.0, 0.5);
+                        let sphere_material = Arc::new(Metal::new(albedo, fuzz));
+                        world.add(Arc::new(Sphere::new(center, 0.2, sphere_material)));
+                    }
+                    _ => {
+                        let sphere_material = Arc::new(Dielectric::new(1.5));
+                        world.add(Arc::new(Sphere::new(center, 0.2, sphere_material)));
+                    }
+                }
+            }
+        }
+    }
+    let material1 = Arc::new(Dielectric::new(1.5));
+    world.add(Arc::new(Sphere::new(
+        Point3::new(0.0, 1.0, 0.0),
+        1.0,
+        material1,
+    )));
+
+    let material2 = Arc::new(Lambertian::new(Color::new(0.4, 0.2, 0.1)));
+    world.add(Arc::new(Sphere::new(
+        Point3::new(-4.0, 1.0, 0.0),
+        1.0,
+        material2,
+    )));
+
+    let material3 = Arc::new(Metal::new(Color::new(0.7, 0.6, 0.5), 0.0));
+    world.add(Arc::new(Sphere::new(
+        Point3::new(4.0, 1.0, 0.0),
+        1.0,
+        material3,
+    )));
+
+    world
 }

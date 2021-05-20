@@ -7,8 +7,7 @@ use std::{
 use rtrcrs::{
     camera::Camera,
     color::{anti_aliased, Color},
-    definitions::random_double,
-    hittable_list::HittableList,
+    definitions::{random_double, random_scene},
     material::{Dielectric, Lambertian, Metal},
     ray::Point3,
     sphere::Sphere,
@@ -24,7 +23,7 @@ fn main() {
     const MAX_DEPTH: i32 = 50;
 
     //World
-    let mut world = HittableList::default();
+    let mut world = random_scene();
 
     let material_ground = Arc::new(Lambertian::new(Color::new(0.8, 0.8, 0.0)));
     let material_center = Arc::new(Lambertian::new(Color::new(0.1, 0.2, 0.5)));
@@ -59,13 +58,13 @@ fn main() {
 
     // Camera
     let camera = Camera::new(
-        &Point3::new(3.0, 3.0, 2.0),
-        &Point3::new(0.0, 0.0, -1.0),
+        &Point3::new(13.0, 2.0, 3.0),
+        &Point3::new(0.0, 0.0, 0.0),
         &Vec3::new(0.0, 1.0, 0.0),
         20.0,
         ASPECT_RATIO,
-        2.0,
-        5.0,
+        0.1,
+        10.0,
     );
 
     // Render
