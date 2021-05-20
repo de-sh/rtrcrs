@@ -9,7 +9,6 @@ use crate::{
 pub trait Material: Sync + Send {
     fn scatter(&self, r_in: &Ray, rec: &HitRecord, scattered: &Ray) -> Option<(Color, Ray)>;
 }
-
 pub struct Lambertian {
     albedo: Color,
 }
