@@ -25,3 +25,6 @@ use material::{Lambertian, Material};
 
 pub mod moving;
 use moving::MovingSphere;
+
+pub mod aabb;
+use aabb::Aabb;

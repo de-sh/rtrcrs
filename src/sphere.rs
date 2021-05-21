@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use crate::{HitRecord, Hittable, Material, Point3, Ray, Vec3};
+use crate::{Aabb, HitRecord, Hittable, Material, Point3, Ray, Vec3};
 
 /// Defines a geometrically Spherical object.
 pub struct Sphere {
@@ -60,5 +60,13 @@ impl Hittable for Sphere {
         rec.material = self.material.clone();
 
         Some(rec)
+    }
+
+    fn bounding_box(&self, _time0: f64, _time1: f64, _output_box: &Aabb) -> Option<Aabb> {
+        let radius = Point3::new(self.radius, self.radius, self.radius);
+        let min = self.center - radius;
+        let max = self.center + radius;
+
+        Some(Aabb::new(min, max))
     }
 }

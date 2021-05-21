@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use crate::{HitRecord, Hittable, Ray};
+use crate::{Aabb, HitRecord, Hittable, Ray};
 
 /// Defines a data-structure to store all the Hittable objects.
 pub struct HittableList {
@@ -38,5 +38,20 @@ impl Hittable for HittableList {
         }
 
         hit_anything
+    }
+
+    fn bounding_box(&self, time0: f64, time1: f64, output_box: &Aabb) -> Option<Aabb> {
+        match self.objects.first() {
+            Some(first) => match first.bounding_box(time0, time1, output_box) {
+                Some(bbox) => self.objects.iter().skip(1).try_fold(bbox, |acc, hitable| {
+                    match hitable.bounding_box(time0, time1, output_box) {
+                        Some(bbox) => Some(Aabb::surrounding_box(&acc, &bbox)),
+                        _ => None,
+                    }
+                }),
+                _ => None,
+            },
+            _ => None,
+        }
     }
 }
