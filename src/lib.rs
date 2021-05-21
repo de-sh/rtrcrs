@@ -22,3 +22,6 @@ pub mod camera;
 
 pub mod material;
 use material::{Lambertian, Material};
+
+pub mod moving;
+use moving::MovingSphere;
