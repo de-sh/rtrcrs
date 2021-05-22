@@ -6,10 +6,30 @@ pub struct Aabb {
 }
 
 impl Aabb {
+    pub fn default() -> Self {
+        Self::new(Point3::new(0.0, 0.0, 0.0), Point3::new(0.0, 0.0, 0.0))
+    }
+
     pub fn new(min: Point3, max: Point3) -> Self {
         Self { min, max }
     }
 
+    pub fn surrounding_box(box0: &Aabb, box1: &Aabb) -> Aabb {
+        let min = Point3::new(
+            f64::min(box0.min.x, box1.min.x),
+            f64::min(box0.min.y, box1.min.y),
+            f64::min(box0.min.z, box1.min.z),
+        );
+        let max = Point3::new(
+            f64::max(box0.max.x, box1.max.x),
+            f64::max(box0.max.y, box1.max.y),
+            f64::max(box0.max.z, box1.max.z),
+        );
+        Aabb { min, max }
+    }
+}
+
+impl Hittable for Aabb {
     fn hit(&self, ray: &Ray, t_min: f64, t_max: f64) -> Option<HitRecord> {
         for a in 0..3 {
             let invd = 1.0 / ray.direction()[a];
@@ -26,17 +46,7 @@ impl Aabb {
         Some(HitRecord::default())
     }
 
-    pub fn surrounding_box(box0: &Aabb, box1: &Aabb) -> Aabb {
-        let min = Point3::new(
-            f64::min(box0.min.x, box1.min.x),
-            f64::min(box0.min.y, box1.min.y),
-            f64::min(box0.min.z, box1.min.z),
-        );
-        let max = Point3::new(
-            f64::max(box0.max.x, box1.max.x),
-            f64::max(box0.max.y, box1.max.y),
-            f64::max(box0.max.z, box1.max.z),
-        );
-        Aabb { min, max }
+    fn bounding_box(&self, time0: f64, time1: f64) -> Option<Aabb> {
+        None
     }
 }

@@ -40,18 +40,24 @@ impl Hittable for HittableList {
         hit_anything
     }
 
-    fn bounding_box(&self, time0: f64, time1: f64, output_box: &Aabb) -> Option<Aabb> {
-        match self.objects.first() {
-            Some(first) => match first.bounding_box(time0, time1, output_box) {
-                Some(bbox) => self.objects.iter().skip(1).try_fold(bbox, |acc, hitable| {
-                    match hitable.bounding_box(time0, time1, output_box) {
-                        Some(bbox) => Some(Aabb::surrounding_box(&acc, &bbox)),
-                        _ => None,
-                    }
-                }),
-                _ => None,
-            },
-            _ => None,
+    fn bounding_box(&self, time0: f64, time1: f64) -> Option<Aabb> {
+        if self.objects.is_empty() {
+            None
+        } else {
+            let (mut first_box, mut output_box) = (true, Aabb::default());
+            for object in self.objects.iter() {
+                if let Some(temp_box) = object.bounding_box(time0, time1) {
+                    output_box = if first_box {
+                        first_box = false;
+                        temp_box
+                    } else {
+                        Aabb::surrounding_box(&output_box, &temp_box)
+                    };
+                } else {
+                    return None;
+                }
+            }
+            Some(output_box)
         }
     }
 }

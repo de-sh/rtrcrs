@@ -78,7 +78,7 @@ impl Hittable for MovingSphere {
         Some(rec)
     }
 
-    fn bounding_box(&self, time0: f64, time1: f64, output_box: &Aabb) -> Option<Aabb> {
+    fn bounding_box(&self, time0: f64, time1: f64) -> Option<Aabb> {
         let box0 = Aabb::new(
             self.center(time0) - Point3::new(self.radius, self.radius, self.radius),
             self.center(time0) + Point3::new(self.radius, self.radius, self.radius),

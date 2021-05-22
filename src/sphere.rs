@@ -62,7 +62,7 @@ impl Hittable for Sphere {
         Some(rec)
     }
 
-    fn bounding_box(&self, _time0: f64, _time1: f64, _output_box: &Aabb) -> Option<Aabb> {
+    fn bounding_box(&self, _time0: f64, _time1: f64) -> Option<Aabb> {
         let radius = Point3::new(self.radius, self.radius, self.radius);
         let min = self.center - radius;
         let max = self.center + radius;

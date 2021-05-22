@@ -58,30 +58,31 @@ impl Ray {
     }
 }
 
-// #[cfg(test)]
-// mod tests {
-//     use super::*;
+#[cfg(test)]
+mod tests {
+    use super::*;
 
-//     #[test]
-//     fn ray_test() {
-//         let origin = Point3::new(3.0, 2.0, 1.0);
-//         let dir = Vec3::new(2.0, 3.0, 5.0);
-//         let ray = Ray::new(origin, dir, 0.0);
+    #[test]
+    fn ray_test() {
+        let origin = Point3::new(3.0, 2.0, 1.0);
+        let dir = Vec3::new(2.0, 3.0, 5.0);
+        let ray = Ray::new(origin, dir, 0.0);
 
-//         assert_eq!(ray.origin(), origin);
-//         assert_eq!(ray.direction(), dir);
-//         assert_eq!(ray.at(3.0), origin + dir * 3.0);
-//     }
-//     #[test]
-//     fn color_test() {
-//         let origin = Point3::new(3.0, 2.0, 1.0);
-//         let dir = Vec3::new(2.0, 3.0, 5.0);
-//         let world = HittableList::default();
-//         let color = Ray::new(origin, dir, 0.0).color(&world, 10);
+        assert_eq!(ray.origin(), origin);
+        assert_eq!(ray.direction(), dir);
+        assert_eq!(ray.at(3.0), origin + dir * 3.0);
+    }
+    #[test]
+    fn color_test() {
+        let origin = Point3::new(3.0, 2.0, 1.0);
+        let dir = Vec3::new(2.0, 3.0, 5.0);
+        let world = HittableList::default();
+        let color = Ray::new(origin, dir, 0.0).color(&world, 10);
 
-//         assert_eq!(
-//             color,
-//             Color::new(0.6283339341519281, 0.7770003604911568, 1.0)
-//         );
-//     }
-// }
+        assert_eq!(
+            color,
+            Color::new(0.6283339341519281, 0.7770003604911568, 1.0)
+        );
+    }
+}
+
