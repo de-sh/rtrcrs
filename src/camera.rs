@@ -1,7 +1,4 @@
-use crate::{
-    definitions::{degrees_to_radians, random_double, random_in_unit_sphere},
-    Point3, Ray, Vec3,
-};
+use crate::{degrees_to_radians, random_double, random_in_unit_sphere, Point3, Ray, Vec3};
 /// Defines a data-structure used to store the geometry of the Camera.
 #[derive(Clone, Copy)]
 pub struct Camera {

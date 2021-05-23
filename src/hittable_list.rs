@@ -22,6 +22,10 @@ impl HittableList {
     pub fn clear(&mut self) {
         self.objects.clear();
     }
+
+    pub fn objects(&mut self) -> &mut Vec<Arc<dyn Hittable>> {
+        &mut self.objects
+    }
 }
 
 impl Hittable for HittableList {

@@ -1,5 +1,6 @@
 use crate::{HitRecord, Hittable, Point3, Ray};
 
+#[derive(Debug, Clone)]
 pub struct Aabb {
     min: Point3,
     max: Point3,
@@ -8,6 +9,14 @@ pub struct Aabb {
 impl Aabb {
     pub fn default() -> Self {
         Self::new(Point3::new(0.0, 0.0, 0.0), Point3::new(0.0, 0.0, 0.0))
+    }
+
+    pub fn min(&self) -> &Point3 {
+        &self.min
+    }
+
+    pub fn max(&self) -> &Point3 {
+        &self.max
     }
 
     pub fn new(min: Point3, max: Point3) -> Self {
@@ -46,7 +55,7 @@ impl Hittable for Aabb {
         Some(HitRecord::default())
     }
 
-    fn bounding_box(&self, time0: f64, time1: f64) -> Option<Aabb> {
+    fn bounding_box(&self, _time0: f64, _time1: f64) -> Option<Aabb> {
         None
     }
 }

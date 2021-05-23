@@ -11,20 +11,24 @@ pub mod hittable;
 use hittable::{HitRecord, Hittable};
 
 pub mod sphere;
+use sphere::Sphere;
 
 pub mod hittable_list;
 use hittable_list::HittableList;
 
 pub mod definitions;
-use definitions::INFINITY;
+use definitions::{degrees_to_radians, random_double, random_in_unit_sphere, INFINITY};
 
 pub mod camera;
 
 pub mod material;
-use material::{Lambertian, Material};
+use material::{Dielectric, Lambertian, Material, Metal};
 
 pub mod moving;
 use moving::MovingSphere;
 
 pub mod aabb;
 use aabb::Aabb;
+
+pub mod bvh;
+use bvh::BvhNode;

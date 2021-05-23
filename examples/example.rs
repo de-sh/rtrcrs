@@ -5,9 +5,11 @@ use std::{
 };
 
 use rtrcrs::{
+    bvh::BvhNode,
     camera::Camera,
     color::{anti_aliased, Color},
     definitions::{random_double, random_scene},
+    hittable_list::HittableList,
     material::{Dielectric, Lambertian, Metal},
     ray::Point3,
     sphere::Sphere,
@@ -19,42 +21,45 @@ fn main() {
     const ASPECT_RATIO: f64 = 16.0 / 9.0;
     const IMAGE_WIDTH: i32 = 400;
     const IMAGE_HEIGHT: i32 = (IMAGE_WIDTH as f64 / ASPECT_RATIO) as i32;
-    const SAMPLES_PER_PIXEL: i32 = 1;
+    const SAMPLES_PER_PIXEL: i32 = 50;
     const MAX_DEPTH: i32 = 50;
 
-    //World
+    // World
     let mut world = random_scene();
+    let mut objects = HittableList::default();
 
     let material_ground = Arc::new(Lambertian::new(Color::new(0.8, 0.8, 0.0)));
     let material_center = Arc::new(Lambertian::new(Color::new(0.1, 0.2, 0.5)));
     let material_left = Arc::new(Dielectric::new(1.5));
     let material_right = Arc::new(Metal::new(Color::new(0.8, 0.6, 0.2), 0.0));
 
-    world.add(Arc::new(Sphere::new(
+    objects.add(Arc::new(Sphere::new(
         Point3::new(0.0, -100.5, -1.0),
         100.0,
         material_ground,
     )));
-    world.add(Arc::new(Sphere::new(
+    objects.add(Arc::new(Sphere::new(
         Point3::new(-1.0, 0.0, -1.0),
         0.5,
         material_left.clone(),
     )));
-    world.add(Arc::new(Sphere::new(
+    objects.add(Arc::new(Sphere::new(
         Point3::new(-1.0, 0.0, -1.0),
         -0.45,
         material_left,
     )));
-    world.add(Arc::new(Sphere::new(
+    objects.add(Arc::new(Sphere::new(
         Point3::new(1.0, 0.0, -1.0),
         0.5,
         material_right,
     )));
-    world.add(Arc::new(Sphere::new(
+    objects.add(Arc::new(Sphere::new(
         Point3::new(0.0, 0.0, -1.0),
         0.5,
         material_center,
     )));
+
+    world.add(Arc::new(BvhNode::new(&mut objects, 0.0, 1.0)));
 
     // Camera
     let camera = Camera::new(

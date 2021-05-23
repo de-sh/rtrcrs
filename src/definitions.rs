@@ -1,10 +1,5 @@
 use crate::{
-    hittable_list::HittableList,
-    material::{Dielectric, Lambertian, Metal},
-    moving::MovingSphere,
-    ray::Point3,
-    sphere::Sphere,
-    Color, Vec3,
+    BvhNode, Color, Dielectric, HittableList, Lambertian, Metal, MovingSphere, Point3, Sphere, Vec3,
 };
 use rand::Rng;
 use std::sync::Arc;
@@ -87,10 +82,11 @@ pub fn reflectance(cosine: f64, ref_idx: f64) -> f64 {
 }
 
 pub fn random_scene() -> HittableList {
+    let mut objects = HittableList::default();
     let mut world = HittableList::default();
 
     let ground_material = Arc::new(Lambertian::new(Color::new(0.5, 0.5, 0.5)));
-    world.add(Arc::new(Sphere::new(
+    objects.add(Arc::new(Sphere::new(
         Point3::new(0.0, -1000.0, 0.0),
         1000.0,
         ground_material,
@@ -112,9 +108,9 @@ pub fn random_scene() -> HittableList {
                     0..=79 => {
                         let albedo = rand_color(0.0, 1.0);
                         let sphere_material = Arc::new(Lambertian::new(albedo));
-                        world.add(Arc::new(Sphere::new(center, 0.2, sphere_material.clone())));
+                        objects.add(Arc::new(Sphere::new(center, 0.2, sphere_material.clone())));
                         let center2 = center + Point3::new(0.0, random_double(0.0, 0.5), 0.0);
-                        world.add(Arc::new(MovingSphere::new(
+                        objects.add(Arc::new(MovingSphere::new(
                             center,
                             center2,
                             0.0,
@@ -127,36 +123,37 @@ pub fn random_scene() -> HittableList {
                         let albedo = rand_color(0.5, 1.0);
                         let fuzz = random_double(0.0, 0.5);
                         let sphere_material = Arc::new(Metal::new(albedo, fuzz));
-                        world.add(Arc::new(Sphere::new(center, 0.2, sphere_material)));
+                        objects.add(Arc::new(Sphere::new(center, 0.2, sphere_material)));
                     }
                     _ => {
                         let sphere_material = Arc::new(Dielectric::new(1.5));
-                        world.add(Arc::new(Sphere::new(center, 0.2, sphere_material)));
+                        objects.add(Arc::new(Sphere::new(center, 0.2, sphere_material)));
                     }
                 }
             }
         }
     }
     let material1 = Arc::new(Dielectric::new(1.5));
-    world.add(Arc::new(Sphere::new(
+    objects.add(Arc::new(Sphere::new(
         Point3::new(0.0, 1.0, 0.0),
         1.0,
         material1,
     )));
 
     let material2 = Arc::new(Lambertian::new(Color::new(0.4, 0.2, 0.1)));
-    world.add(Arc::new(Sphere::new(
+    objects.add(Arc::new(Sphere::new(
         Point3::new(-4.0, 1.0, 0.0),
         1.0,
         material2,
     )));
 
     let material3 = Arc::new(Metal::new(Color::new(0.7, 0.6, 0.5), 0.0));
-    world.add(Arc::new(Sphere::new(
+    objects.add(Arc::new(Sphere::new(
         Point3::new(4.0, 1.0, 0.0),
         1.0,
         material3,
     )));
 
+    world.add(Arc::new(BvhNode::new(&mut objects, 0.0, 1.0)));
     world
 }
