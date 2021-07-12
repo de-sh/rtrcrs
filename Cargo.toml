@@ -5,6 +5,8 @@ authors = [
   "Devdutt Shenoi <devdutt@outlook.in>",
   "M Bharath Krishna Pai <m.bharathkrishna07@gmail.com>"
 ]
+license = "MIT"
+description = "An experimental ray-tracing library being written in rust, inspired by Ray Tracing in One Weekend"
 edition = "2018"
 
 [dependencies]
